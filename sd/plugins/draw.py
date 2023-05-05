@@ -4,6 +4,7 @@ import base64
 from PIL import Image
 from io import BytesIO
 from . import config
+import re
 
 @on_command("画")
 async def draw(session: CommandSession):
@@ -115,3 +116,12 @@ async def draw(session: CommandSession):
                             seg = MessageSegment.image("file:///" + filename)
                             pic = await session.send(seg)
     return
+
+
+@on_natural_language(keywords=["图",], only_to_me=False, only_short_message=False)
+async def _(session: NLPSession):
+    stripped_arg = session.msg_text.strip()
+    arg = re.search("画[点张](.*?)的?色?图", stripped_arg)
+    if arg:
+        arg = arg.group(1)
+        return IntentCommand(90.0, "画", args = {"images": session.msg_images}, current_arg=arg)
