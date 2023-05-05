@@ -3,6 +3,7 @@ import requests
 import base64
 from PIL import Image
 from io import BytesIO
+from . import config
 
 @on_command("画")
 async def draw(session: CommandSession):
@@ -27,7 +28,7 @@ async def draw(session: CommandSession):
         else:
             mode = "img2img"
     if mode == "txt2img":
-        url = "http://127.0.0.1:7860/sdapi/v1/txt2img"
+        url = STABLE_DIFFUSION_URL + "/sdapi/v1/txt2img"
         data = {
                #"prompt": "high quality,best quality,masterpiece,blue archive,medium breasts,tendou arisu,white hair,long hair,red eyes",
                 "prompt": "best quality,{{masterpiece}}:,high quality," + ",".join(tags),
@@ -108,19 +109,9 @@ async def draw(session: CommandSession):
                         images = d["images"]
                         for i in images:
                             hash = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
-                            filename = "E:\\Resources\\code\\music-bot\\images\\novelai-{}.png".format(hash)
+                            filename = IMAGE_DIR + "\\novelai-{}.png".format(hash)
                             with open(filename, "wb") as f:
                                 f.write(base64.b64decode(i))
                             seg = MessageSegment.image("file:///" + filename)
                             pic = await session.send(seg)
-    # r = requests.post(url, json=data)
-    # d = json.loads(r.content)
-    # images = d["images"]
-    # for i in images:
-    #     hash = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
-    #     filename = "E:\\Resources\\code\\music-bot\\images\\novelai-{}.png".format(hash)
-    #     with open(filename, "wb") as f:
-    #         f.write(base64.b64decode(i))
-    #     seg = MessageSegment.image("file:///" + filename)
-    #     pic = await session.send(seg)
     return

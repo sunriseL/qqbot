@@ -1,10 +1,10 @@
 import nonebot
-# import config
+import config
 import logging
 from os import path
 
 if __name__ == '__main__':
-    # nonebot.init(config)
+    nonebot.init(config)
     nonebot.load_builtin_plugins()
     nonebot.load_plugins(path.join(path.dirname(__file__), "purchase", "plugins"), "purchase.plugins")
     nonebot.load_plugins(path.join(path.dirname(__file__), "sd", "plugins"), "sd.plugins")
